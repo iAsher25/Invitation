@@ -202,7 +202,12 @@
         }
       }
     });
-
+    
+    // Desktop hover
+    noBtn.addEventListener("mouseover", moveNoButton);
+    // Mobile touch
+    noBtn.addEventListener("touchstart", moveNoButton);
+    
     document.getElementById("yes").addEventListener("click", () => {
       const surprise = document.querySelector(".surprise");
       if (surprise) surprise.remove();
