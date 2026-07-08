@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10th Anniversary Invitation</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background: linear-gradient(to bottom right, pink, lightyellow);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      color: darkred;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      font-size: 26px;
+      color: darkred;
+      margin-bottom: 20px;
+    }
+    .buttons {
+      margin-top: 20px;
+      position: relative;
+      width: 100%;
+      height: 200px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    #yes {
+      background-color: #ff4d4d;
+      color: white;
+      position: relative;
+      z-index: 3;
+    }
+    #no {
+      background-color: #ccc;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+    }
+    .heart {
+      position: absolute;
+      color: red;
+      font-size: 24px;
+      animation: floatUp 6s linear forwards;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(100vh) scale(1); opacity: 1; }
+      25%  { opacity: 0.7; }
+      50%  { opacity: 0.4; }
+      75%  { opacity: 0.2; }
+      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+    }
+    #cat {
+      display: none;
+      animation: fadeIn 2s ease-in-out;
+    }
+    #cat img {
+      width: 350px;
+      height: auto;
+      border: 6px solid #555;
+      border-radius: 12px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .sad-cat-container {
+      display: none;
+      margin-top: 20px;
+    }
+    .sad-cat-container img {
+      width: 350px;
+      height: auto;
+      border: 6px solid #555;
+      border-radius: 12px;
+    }
+    .sad-text {
+      font-size: 22px;
+      color: darkblue;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    .counter-text {
+      font-size: 18px;
+      color: #444;
+      margin-top: 8px;
+    }
+    .surprise {
+      font-size: 22px;
+      color: darkred;
+      font-weight: bold;
+      margin-top: 20px;
+      animation: fadeIn 1s ease-in-out;
+      background: rgba(255,192,203,0.3);
+      padding: 10px;
+      border-radius: 10px;
+    }
+    /* Sparkling text effect */
+    .sparkle-text {
+      font-size: 24px;
+      font-weight: bold;
+      color: darkred;
+      animation: sparkle 2s infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes sparkle {
+      0% { text-shadow: 0 0 5px gold; }
+      50% { text-shadow: 0 0 15px pink; }
+      100% { text-shadow: 0 0 5px purple; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Invitation text (hidden after Yes click) -->
+  <div id="invitation-text">
+    <h1>Hi Baby Girl, will you be my date for our 10th Anniversary night?</h1>
+    <p class="subtitle">I planned a romantic dinner for us on July 18 to make it unforgettable.</p>
+  </div>
+
+  <!-- Sad cat container -->
+  <div id="sad-cat" class="sad-cat-container">
+    <img id="sad-cat-img" src="" alt="Sad Cat">
+    <p id="sad-cat-text" class="sad-text"></p>
+    <p id="counter" class="counter-text"></p>
+  </div>
+
+  <div class="buttons">
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+  </div>
+
+  <div id="cat">
+    <!-- Sparkling text on top -->
+    <p class="sparkle-text">Yay! ❤️ I can’t wait to celebrate our 10th Anniversary together!</p>
+    <!-- Hugging cats with heart GIF below -->
+    <img src="https://media.giphy.com/media/wvYNSqBAMDVx8CEYkt/giphy.gif" alt="Cats Hugging with Heart">
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("no");
+    const buttonsContainer = document.querySelector(".buttons");
+    const catDiv = document.getElementById("cat");
+    const sadCatDiv = document.getElementById("sad-cat");
+    const sadCatImg = document.getElementById("sad-cat-img");
+    const sadCatText = document.getElementById("sad-cat-text");
+    const counterText = document.getElementById("counter");
+    const invitationText = document.getElementById("invitation-text");
+
+    const sadCats = [
+      {src: "https://media.giphy.com/media/ruyS8Zw9sBqE5UjOnY/giphy.gif", text: "Ouch!"},
+      {src: "https://media.giphy.com/media/lGBecpB2dIMwt6ohfI/giphy.gif", text: "Really??"},
+      {src: "https://media.giphy.com/media/0p7Vh88pa98560BfVS/giphy.gif", text: "Why No!?"},
+      {src: "https://media.giphy.com/media/Lr6hRUytUcabMUlHS6/giphy.gif", text: "Last Chance?"}
+    ];
+    let sadCatIndex = 0;
+    let sadCatsEnabled = true;
+    let noAttempts = 0;
+
+    noBtn.addEventListener("mouseover", () => {
+      const maxX = buttonsContainer.offsetWidth - noBtn.offsetWidth;
+      const maxY = buttonsContainer.offsetHeight - noBtn.offsetHeight;
+      const x = Math.floor(Math.random() * maxX);
+      const y = Math.floor(Math.random() * maxY);
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+
+      if (sadCatsEnabled) {
+        sadCatImg.src = sadCats[sadCatIndex].src;
+        sadCatText.textContent = sadCats[sadCatIndex].text;
+        sadCatDiv.style.display = "block";
+        sadCatIndex = (sadCatIndex + 1) % sadCats.length;
+
+        noAttempts++;
+        counterText.textContent = "Cats counted " + noAttempts + " heartbreaks so far.";
+
+        if (noAttempts % 3 === 0) {
+          const surprise = document.createElement("div");
+          surprise.classList.add("surprise");
+          surprise.textContent = "I’ll love you no matter what 💖 Yes is the only way!";
+          document.body.insertBefore(surprise, buttonsContainer);
+          setTimeout(() => { if (surprise.parentNode) surprise.remove(); }, 3000);
+        }
+      }
+    });
+
+    document.getElementById("yes").addEventListener("click", () => {
+      const surprise = document.querySelector(".surprise");
+      if (surprise) surprise.remove();
+
+      invitationText.style.display = "none"; // hide opening text
+      document.querySelector(".buttons").style.display = "none";
+      catDiv.style.display = "block"; // show cats + sparkling text
+      sadCatDiv.style.display = "none"; 
+      sadCatsEnabled = false;
+    });
+
+    // Floating hearts generator
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => { heart.remove(); }, 6000);
+    }
+    setInterval(createHeart, 800);
+  </script>
+</body>
+</html>
